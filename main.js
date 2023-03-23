@@ -206,12 +206,12 @@
         if (player1Position === 100) {
             setTimeout(() => {
                 alert('Player1 wins'); window.location.reload();
-            }, 0)
+            }, 1100)
         }
         else if (player2Position === 100) {
             setTimeout(() => {
                 alert('Player2 wins'); window.location.reload();
-            }, 0)
+            }, 1100)
         }
     }
 
