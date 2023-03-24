@@ -110,8 +110,7 @@
     const initiatePlay = () => {
         gamePanel.classList.remove('initiateGame');
         gamePanel.classList.add('selectColors');
-        document.getElementById('play').removeEventListener('click', initiatePlay);
-        document.getElementById('selectColor').addEventListener('click', selectColors);
+        document.getElementById('selectColor').addEventListener('click', selectColors, { once: true });
     }
 
     const selectColors = () => {
@@ -128,8 +127,7 @@
         }
         gamePanel.classList.remove('selectColors');
         gamePanel.classList.add('startGame');
-        document.getElementById('selectColor').removeEventListener('click', selectColors);
-        document.getElementById('start').addEventListener('click', startGame);
+        document.getElementById('start').addEventListener('click', startGame, { once: true });
     }
 
     const startGame = () => {
@@ -139,7 +137,6 @@
         appendCoinToGrid(2, player2Color);
         setCoinPositions(player1Position, player2Position, 1, true);
         cube = document.querySelector('.cube');
-        document.getElementById('start').removeListener('click', startGame);
         document.getElementById('player1Throw').addEventListener('click', () => handlePlayerThrow(1));
         document.getElementById('player2Throw').addEventListener('click', () => handlePlayerThrow(2));
     }
@@ -203,6 +200,6 @@
         grid.appendChild(gridItem);
     });
 
-    document.getElementById('play').addEventListener('click', initiatePlay);
+    document.getElementById('play').addEventListener('click', initiatePlay, { once: true });
 
 })();
