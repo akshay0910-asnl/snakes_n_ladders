@@ -26,70 +26,37 @@
         return Math.floor(Math.random() * 6 + 1);
     }
 
-    const createCoinContainer = (index) => {
-        const coinContainer = document.createElement('div');
-        coinContainer.classList.add('coinContainer');
-        coinContainer.classList.add(`player${index}Container`);
-        coinContainer.setAttribute('id', `player${index}Container`);
-        return coinContainer;
-    }
-
-    const appendCoinToCoinContainer = (coinContainer, index, color) => {
+    const appendCoinToGrid = (index, color) => {
         const playerCoin = document.createElement('div');
         playerCoin.classList.add('coin');
         playerCoin.classList.add(`player${index}Coin`);
         playerCoin.setAttribute('id', `player${index}Coin`);
         playerCoin.style.backgroundColor = color;
-        coinContainer.appendChild(playerCoin);
+        grid.appendChild(playerCoin);
     }
 
     const setCoinPositions = (player1Position, player2Position, currentCoinIndex, firstSetup = false, ifPreviouslyEqual = false) => {
         let otherCoinIndex = currentCoinIndex === 1 ? 2 : 1;
         if (player1Position === player2Position) {
             const { left, top } = calculateTopAndLeftParametersGivenStep(player1Position, true);
-            if (firstSetup) {
-                document.querySelector(`#player1Container`).style.left =
-                    document.querySelector(`#player2Container`).style.left = `${left}%`;
-                document.querySelector(`#player1Container`).style.top =
-                    document.querySelector(`#player2Container`).style.top = `${top}%`;
-            }
-
-            else {
-                document.querySelector(`#player${currentCoinIndex}Container`).style.left =
-                    document.querySelector(`#player${otherCoinIndex}Container`).style.left;
-
-                document.querySelector(`#player${currentCoinIndex}Container`).style.top =
-                    document.querySelector(`#player${otherCoinIndex}Container`).style.top = `${top}%`;
-            }
-            appendCoinToCoinContainerInCaseOfTie(1, 2);
-            appendCoinToCoinContainerInCaseOfTie(2, 1);
+            const { height: gridHeight } = grid.getBoundingClientRect();
+            document.querySelector(`#player1Coin`).style.left = document.querySelector(`#player2Coin`).style.left
+                = `${left}%`;
+            document.querySelector(`#player1Coin`).style.top = `${top}%`;
+            document.querySelector(`#player2Coin`).style.top = `${top + (30 * 100) / gridHeight}%`;
         }
         else {
             const { left, top } = calculateTopAndLeftParametersGivenStep
                 (currentCoinIndex === 1 ? player1Position : player2Position, false);
-            let currentCoinContainer = document.querySelector(`#player${currentCoinIndex}Container`);
-            let otherCoinContainer = document.querySelector(`#player${otherCoinIndex}Container`);
-            let otherCoinInCurrentContainer = document.querySelector(`#player${currentCoinIndex}Container .player${otherCoinIndex}Coin`);
-            let currentCoinInOtherContainer = document.querySelector(`#player${otherCoinIndex}Container .player${currentCoinIndex}Coin`);
-            if (otherCoinInCurrentContainer) { otherCoinInCurrentContainer.remove(); }
-            if (currentCoinInOtherContainer) { currentCoinInOtherContainer.remove(); }
-            currentCoinContainer.style.left = `${left}%`;
-            currentCoinContainer.style.top = `${top}%`;
+            let currentCoin = document.querySelector(`#player${currentCoinIndex}Coin`);
+            let otherCoin = document.querySelector(`#player${otherCoinIndex}Coin`);
+            currentCoin.style.left = `${left}%`;
+            currentCoin.style.top = `${top}%`;
             if (ifPreviouslyEqual) {
                 const { top } = calculateTopAndLeftParametersGivenStep
                     (currentCoinIndex === 1 ? player2Position : player1Position, false);
-                otherCoinContainer.style.top = `${top}%`;
+                otherCoin.style.top = `${top}%`;
             }
-        }
-    }
-
-    const appendCoinToCoinContainerInCaseOfTie = (containerIndex, coinIndex) => {
-        if (containerIndex === coinIndex) return;
-        let coinContainer = document.querySelector(`#player${containerIndex}Container`);
-        let coin = document.querySelector(`.player${coinIndex}Coin`)
-        if (!coinContainer.contains(coin)) {
-            (coinIndex === 1) ? coinContainer.prepend(coin.cloneNode(true)) :
-                coinContainer.appendChild(coin.cloneNode(true));
         }
     }
 
@@ -133,7 +100,7 @@
         let left = dataStepBoundingRect.left - gridBoundingRect.left;
         let leftOffset = (dataStepBoundingRect.width - 20) / 2;
         left += leftOffset;
-        let top = dataStepBoundingRect.top - gridBoundingRect.top;
+        let top = dataStepBoundingRect.top - gridBoundingRect.top, top2;
         let coinCointainer = (ifBothCoinsInvolved) ? 20 * 2 + 10 : 20;
         let topOffset = (dataStepBoundingRect.height - coinCointainer) / 2
         top += topOffset;
@@ -168,11 +135,8 @@
     const startGame = () => {
         document.querySelector('.gamePanel').remove();
         playerThrow.classList.remove('hide');
-        const player1CoinContainer = createCoinContainer(1), player2CoinContainer = createCoinContainer(2)
-        appendCoinToCoinContainer(player1CoinContainer, 1, player1Color);
-        appendCoinToCoinContainer(player2CoinContainer, 2, player2Color);
-        grid.appendChild(player1CoinContainer);
-        grid.appendChild(player2CoinContainer);
+        appendCoinToGrid(1, player1Color);
+        appendCoinToGrid(2, player2Color);
         setCoinPositions(player1Position, player2Position, 1, true);
         cube = document.querySelector('.cube');
         document.getElementById('player1Throw').addEventListener('click', () => handlePlayerThrow(1));

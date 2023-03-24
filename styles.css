@@ -34,17 +34,14 @@ body{
     text-align: center;
 }
 
-.coinContainer {
+.coin {
     position: absolute;
     top: 0;
     left: 0;
-    transition: all 0.8s;
-}
-
-.coin {
     width: 20px;
     height: 20px;
     border-radius: 50%;
+    transition: all 0.8s;
 }
 
 .coinContainer .coin:not(:first-of-type) {
