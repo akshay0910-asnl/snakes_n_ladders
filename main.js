@@ -139,6 +139,7 @@
         appendCoinToGrid(2, player2Color);
         setCoinPositions(player1Position, player2Position, 1, true);
         cube = document.querySelector('.cube');
+        document.getElementById('start').removeListener('click', startGame);
         document.getElementById('player1Throw').addEventListener('click', () => handlePlayerThrow(1));
         document.getElementById('player2Throw').addEventListener('click', () => handlePlayerThrow(2));
     }
@@ -187,6 +188,11 @@
         cube.classList.add(showClass);
         currentCubeClass = showClass;
     }
+
+    window.onunload = (event) => {
+        document.getElementById('player1Throw').removeEventListener('click', () => handlePlayerThrow(1));
+        document.getElementById('player2Throw').removeEventListener('click', () => handlePlayerThrow(2));
+    };
 
     ranges.forEach(range => {
         const gridItem = document.createElement('div');
